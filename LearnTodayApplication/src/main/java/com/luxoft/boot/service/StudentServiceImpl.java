@@ -4,9 +4,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 import com.luxoft.boot.entity.Course;
 import com.luxoft.boot.entity.StudentCourseMappingg;
@@ -30,9 +32,11 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	public StudentDeatailsModel postStudent(StudentDeatailsModel student) {
+		
 		 StudentDeatailsModel studentDetailsModel=new StudentDeatailsModel();
 		StudentDeatails studentDetail=new StudentDeatails();
 		BeanUtils.copyProperties(student, studentDetail);
+		try {
 		StudentDeatails savedStudent=studentRepository.save(studentDetail);
 		Optional<Course> course=courseRepository.findById(student.getSelectedCourse().getCourseId());
 		if(course.isPresent()) {
@@ -47,7 +51,9 @@ public class StudentServiceImpl implements StudentService {
 				modelselected.setCourseName(savedCourseMap.getCourse().getTittle());
 				studentDetailsModel.setSelectedCourse(modelselected);
 		}
+		}catch (Exception e) {
 		
+		}
 			
 		return studentDetailsModel;
 	}

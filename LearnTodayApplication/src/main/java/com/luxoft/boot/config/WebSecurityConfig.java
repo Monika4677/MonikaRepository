@@ -40,17 +40,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 			.authorizeRequests()
-			.antMatchers("/authenticate","/register","/swagger-ui/**")
+			.antMatchers("/authenticate","/register")
 			.permitAll()
 			.anyRequest()
 			.authenticated();
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 	}
-
-	/*
-	 * @Bean public PasswordEncoder passwordEncoder() { return new
-	 * BCryptPasswordEncoder(); }
-	 */
+	
 	
 	@Bean
 	@Override
@@ -62,12 +58,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
 	}
 	
-	public static final String[] AUTH_WHITELIST = { "/swagger-ui.html/**", "/configuration/**", "/swagger-resources/**",
-			"/v2/api-docs", "/webjars/**" };
-
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().mvcMatchers(HttpMethod.OPTIONS, "/**");
-		web.ignoring().mvcMatchers(AUTH_WHITELIST);
+	
 	}
-}
+
